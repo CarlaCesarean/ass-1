@@ -42,6 +42,7 @@ public class CatalogController {
 		serverConnection = new ServerConnection(HOST, PORT);
 
 		catalogView.addBtnGetActionListener(new GetActionListener());
+		catalogView.addBtnDeleteActionListener(new DeleteActionListener());
 		catalogView.addBtnPostActionListener(new PostActionListener());
 	}
 
@@ -110,6 +111,7 @@ public class CatalogController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
+				
 				int studentId = Integer.parseInt(catalogView.getStudentId());
 				//encode the request: a GET request, with url "student?id=X" (passing id in url) and no object sent through
 				String encodedRequest = RequestMessageEncoder.encode(ProtocolMethod.GET, "student?id=" + studentId);
@@ -118,6 +120,37 @@ public class CatalogController {
 
 				if (decodedResponse.getStatusCode() == StatusCode.OK.getCode()) {
 					printStudent(decodedResponse.getDeserializedObject(Student.class));
+				} else {
+					displayErrorMessage("Status code " + decodedResponse.getStatusCode());
+				}
+				
+				//catalogView.clear();
+				
+			} catch (NumberFormatException ex) {
+				displayErrorMessage("Please enter a number!");
+			} catch (IOException ex) {
+				displayErrorMessage(ERROR_MESSAGE);
+				LOGGER.error("", ex);
+			}
+		}
+	}
+	
+	/**
+	 * Provides functionality for the DELETE button.
+	 */
+	class DeleteActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				int studentId = Integer.parseInt(catalogView.getStudentId());
+				//encode the request: a GET request, with url "student?id=X" (passing id in url) and no object sent through
+				String encodedRequest = RequestMessageEncoder.encode(ProtocolMethod.DELETE, "student?id=" + studentId);
+				String response = serverConnection.sendRequest(encodedRequest);
+				ResponseMessage decodedResponse = ResponseMessageEncoder.decode(response);
+
+				if (decodedResponse.getStatusCode() == StatusCode.OK.getCode()) {
+					catalogView.printDeleteSuccessMessage(studentId);
 				} else {
 					displayErrorMessage("Status code " + decodedResponse.getStatusCode());
 				}

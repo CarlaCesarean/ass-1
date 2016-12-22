@@ -86,4 +86,27 @@ public class StudentDAO {
 		}
 		return students != null && !students.isEmpty() ? students.get(0) : null;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public int deleteStudent(int id) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		List<Student> students = null;
+		int deletedStudents = 0;
+		try {
+			tx = session.beginTransaction();
+			Query query = session.createQuery("DELETE FROM Student WHERE id = :id");
+			query.setParameter("id", id);
+			deletedStudents = query.executeUpdate();
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			LOGGER.error("", e);
+		} finally {
+			session.close();
+		}
+		return deletedStudents;
+	}
 }

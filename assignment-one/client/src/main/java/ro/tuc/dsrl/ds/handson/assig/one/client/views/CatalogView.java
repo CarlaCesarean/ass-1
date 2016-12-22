@@ -24,6 +24,7 @@ public class CatalogView extends JFrame {
 	private JTextField textId;
 	private JButton btnGet;
 	private JButton btnPost;
+	private JButton btnDelete;
 	private JTextArea textArea;
 
 	public CatalogView() {
@@ -87,13 +88,22 @@ public class CatalogView extends JFrame {
 		btnGet.setBounds(235, 77, 89, 23);
 		contentPane.add(btnGet);
 
+		btnDelete = new JButton("DELETE");
+		btnDelete.setBounds(330, 77, 89, 23);
+		contentPane.add(btnDelete);
+		
 		textArea = new JTextArea();
+		textArea.setWrapStyleWord(true);
 		textArea.setBounds(235, 131, 171, 120);
 		contentPane.add(textArea);
 	}
 
 	public void addBtnGetActionListener(ActionListener e) {
 		btnGet.addActionListener(e);
+	}
+	
+	public void addBtnDeleteActionListener(ActionListener e) {
+		btnDelete.addActionListener(e);
 	}
 
 	public void addBtnPostActionListener(ActionListener e) {
@@ -120,6 +130,10 @@ public class CatalogView extends JFrame {
 		textArea.setText(student.toString());
 	}
 
+	public void printDeleteSuccessMessage(int studentId) {
+		textArea.setText("The student with the id " + studentId + " was\n succesfully deleted!");
+	}
+	
 	public void clear() {
 		textId.setText("");
 		textFirstname.setText("");
